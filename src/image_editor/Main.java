@@ -16,6 +16,7 @@ import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
+import sun.awt.image.ToolkitImage;
 
 /**
  *
@@ -29,7 +30,7 @@ public class Main extends javax.swing.JFrame {
     public String imagePath = null;
     BufferedImage image = null;
     double scale;
-    ImageIcon secondImage = null;
+    BufferedImage secondImage = null;
     public Main() {
         initComponents();
     }
@@ -155,7 +156,7 @@ public class Main extends javax.swing.JFrame {
             
             try {
                 image = ImageIO.read(new File(imagePath));
-                secondImage = new ImageIcon(image);
+                secondImage = image;
                 scale = determineImageScale(image.getWidth(), image.getHeight(), 250, 250);
                 jLabel1.setIcon(new ImageIcon(new ImageIcon(imagePath).getImage().getScaledInstance((int) (image.getWidth() * scale), (int) (image.getHeight() * scale), Image.SCALE_SMOOTH)));
                 jLabel2.setIcon(new ImageIcon(new ImageIcon(imagePath).getImage().getScaledInstance((int) (image.getWidth() * scale), (int) (image.getHeight() * scale), Image.SCALE_SMOOTH)));
@@ -185,12 +186,11 @@ public class Main extends javax.swing.JFrame {
     } 
     
     private void flipVerticalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_flipVerticalActionPerformed
-        Image tempImage = secondImage.getImage();
-        BufferedImage newImage = (BufferedImage) tempImage;
-        BufferedImage flippedImage = horizontalflip(newImage);
         
-        secondImage = new ImageIcon(new ImageIcon(flippedImage).getImage().getScaledInstance((int) (image.getWidth() * scale), (int) (image.getHeight() * scale), Image.SCALE_SMOOTH));
-        jLabel2.setIcon(secondImage);
+        BufferedImage flippedImage = horizontalflip(secondImage);
+        
+        secondImage = flippedImage;
+        jLabel2.setIcon(new ImageIcon(new ImageIcon(secondImage).getImage().getScaledInstance((int) (image.getWidth() * scale), (int) (image.getHeight() * scale), Image.SCALE_SMOOTH)));
     }//GEN-LAST:event_flipVerticalActionPerformed
 
     
@@ -205,12 +205,11 @@ public class Main extends javax.swing.JFrame {
     }  
     
     private void flipHorizontalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_flipHorizontalActionPerformed
-        Image tempImage = secondImage.getImage();
-        BufferedImage newImage = (BufferedImage) tempImage;
-        BufferedImage flippedImage = verticalflip(newImage);
+  
+        BufferedImage flippedImage = verticalflip(secondImage);
         
-        secondImage = new ImageIcon(new ImageIcon(flippedImage).getImage().getScaledInstance((int) (image.getWidth() * scale), (int) (image.getHeight() * scale), Image.SCALE_SMOOTH));
-        jLabel2.setIcon(secondImage);
+        secondImage = flippedImage;
+        jLabel2.setIcon(new ImageIcon(new ImageIcon(secondImage).getImage().getScaledInstance((int) (image.getWidth() * scale), (int) (image.getHeight() * scale), Image.SCALE_SMOOTH)));
     }//GEN-LAST:event_flipHorizontalActionPerformed
 
     /**
