@@ -5,14 +5,25 @@
 package image_editor;
 
 import java.awt.Dimension;
+import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.GraphicsConfiguration;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
 import java.awt.Image;
+import java.awt.Toolkit;
+import java.awt.Transparency;
 import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferByte;
+import java.awt.image.FilteredImageSource;
+import java.awt.image.ImageFilter;
+import java.awt.image.ImageProducer;
 import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
+import javax.swing.GrayFilter;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
@@ -55,6 +66,10 @@ public class Main extends javax.swing.JFrame {
         jMenu2 = new javax.swing.JMenu();
         flipHorizontal = new javax.swing.JMenuItem();
         flipVertical = new javax.swing.JMenuItem();
+        clockwise = new javax.swing.JMenuItem();
+        anticlockwise = new javax.swing.JMenuItem();
+        jMenu3 = new javax.swing.JMenu();
+        greyscale = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -121,7 +136,35 @@ public class Main extends javax.swing.JFrame {
         });
         jMenu2.add(flipVertical);
 
+        clockwise.setText("Rotate 90 clockwise");
+        clockwise.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                clockwiseActionPerformed(evt);
+            }
+        });
+        jMenu2.add(clockwise);
+
+        anticlockwise.setText("Rotate 90 anti-clockwise");
+        anticlockwise.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                anticlockwiseActionPerformed(evt);
+            }
+        });
+        jMenu2.add(anticlockwise);
+
         jMenuBar1.add(jMenu2);
+
+        jMenu3.setText("Color");
+
+        greyscale.setText("Greyscale");
+        greyscale.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                greyscaleActionPerformed(evt);
+            }
+        });
+        jMenu3.add(greyscale);
+
+        jMenuBar1.add(jMenu3);
 
         setJMenuBar(jMenuBar1);
 
@@ -212,6 +255,49 @@ public class Main extends javax.swing.JFrame {
         jLabel2.setIcon(new ImageIcon(new ImageIcon(secondImage).getImage().getScaledInstance((int) (image.getWidth() * scale), (int) (image.getHeight() * scale), Image.SCALE_SMOOTH)));
     }//GEN-LAST:event_flipHorizontalActionPerformed
 
+    
+    public static BufferedImage rotateCw( BufferedImage img ){
+        int width  = img.getWidth();
+        int height = img.getHeight();
+        BufferedImage newImage = new BufferedImage( height, width, img.getType() );
+
+        for( int i=0 ; i < width ; i++ )
+            for( int j=0 ; j < height ; j++ )
+                newImage.setRGB( height-1-j, i, img.getRGB(i,j) );
+
+        return newImage;
+    }
+       
+    
+    private void clockwiseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clockwiseActionPerformed
+        BufferedImage rotatedImage = rotateCw(secondImage);
+        secondImage = rotatedImage;
+        jLabel2.setIcon(new ImageIcon(new ImageIcon(secondImage).getImage().getScaledInstance((int) (image.getWidth() * scale), (int) (image.getHeight() * scale), Image.SCALE_SMOOTH)));
+    }//GEN-LAST:event_clockwiseActionPerformed
+
+    private void anticlockwiseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_anticlockwiseActionPerformed
+        BufferedImage rotatedImage = rotateCw(secondImage);
+        BufferedImage flippedImage = horizontalflip(rotatedImage);
+        secondImage = flippedImage;
+        jLabel2.setIcon(new ImageIcon(new ImageIcon(secondImage).getImage().getScaledInstance((int) (image.getWidth() * scale), (int) (image.getHeight() * scale), Image.SCALE_SMOOTH)));
+        
+        
+    }//GEN-LAST:event_anticlockwiseActionPerformed
+
+    private void greyscaleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_greyscaleActionPerformed
+        ImageFilter filter = new GrayFilter(true, 50);  
+        ImageProducer producer = new FilteredImageSource(image.getSource(), filter);  
+        Image secoImage = Toolkit.getDefaultToolkit().createImage(producer);  
+        secondImage = new BufferedImage(secoImage.getWidth(null), secoImage.getHeight(null),
+        BufferedImage.TYPE_INT_RGB);
+        
+         Graphics g = secondImage.createGraphics();
+         g.drawImage(secoImage, 0, 0, null);
+         g.dispose();
+        
+        jLabel2.setIcon(new ImageIcon(new ImageIcon(secondImage).getImage().getScaledInstance((int) (image.getWidth() * scale), (int) (image.getHeight() * scale), Image.SCALE_SMOOTH)));
+    }//GEN-LAST:event_greyscaleActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -247,12 +333,16 @@ public class Main extends javax.swing.JFrame {
         });
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenuItem anticlockwise;
+    private javax.swing.JMenuItem clockwise;
     private javax.swing.JMenuItem flipHorizontal;
     private javax.swing.JMenuItem flipVertical;
+    private javax.swing.JMenuItem greyscale;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
+    private javax.swing.JMenu jMenu3;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
