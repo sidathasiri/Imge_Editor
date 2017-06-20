@@ -27,6 +27,7 @@ import javax.swing.GrayFilter;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import sun.awt.image.ToolkitImage;
 
 /**
@@ -70,6 +71,8 @@ public class Main extends javax.swing.JFrame {
         anticlockwise = new javax.swing.JMenuItem();
         jMenu3 = new javax.swing.JMenu();
         greyscale = new javax.swing.JMenuItem();
+        resize = new javax.swing.JMenu();
+        crop = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -165,6 +168,18 @@ public class Main extends javax.swing.JFrame {
         jMenu3.add(greyscale);
 
         jMenuBar1.add(jMenu3);
+
+        resize.setText("Resize");
+
+        crop.setText("Crop");
+        crop.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cropActionPerformed(evt);
+            }
+        });
+        resize.add(crop);
+
+        jMenuBar1.add(resize);
 
         setJMenuBar(jMenuBar1);
 
@@ -283,10 +298,11 @@ public class Main extends javax.swing.JFrame {
         
         
     }//GEN-LAST:event_anticlockwiseActionPerformed
-
+  
+    
     private void greyscaleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_greyscaleActionPerformed
         ImageFilter filter = new GrayFilter(true, 50);  
-        ImageProducer producer = new FilteredImageSource(image.getSource(), filter);  
+        ImageProducer producer = new FilteredImageSource(secondImage.getSource(), filter);  
         Image secoImage = Toolkit.getDefaultToolkit().createImage(producer);  
         secondImage = new BufferedImage(secoImage.getWidth(null), secoImage.getHeight(null),
         BufferedImage.TYPE_INT_RGB);
@@ -297,7 +313,30 @@ public class Main extends javax.swing.JFrame {
         
         jLabel2.setIcon(new ImageIcon(new ImageIcon(secondImage).getImage().getScaledInstance((int) (image.getWidth() * scale), (int) (image.getHeight() * scale), Image.SCALE_SMOOTH)));
     }//GEN-LAST:event_greyscaleActionPerformed
+    
+    public BufferedImage cropImage(int p, int q, int r, int s){
+        BufferedImage croppedImage = image.getSubimage(p, q, r, s);
+        jLabel2.setIcon(new ImageIcon(new ImageIcon(croppedImage).getImage().getScaledInstance((int) (image.getWidth() * scale), (int) (image.getHeight() * scale), Image.SCALE_SMOOTH)));
+        return croppedImage;
+    }
+    
+    private void cropActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cropActionPerformed
+        
+        String input1= JOptionPane.showInputDialog("Enter starting point X: ");
+        String input2= JOptionPane.showInputDialog("Enter starting point Y: ");
+        String input3= JOptionPane.showInputDialog("Enter width: ");
+        String input4= JOptionPane.showInputDialog("Enter hight: ");
 
+        int int1 = Integer.parseInt(input1);
+        int int2 = Integer.parseInt(input2);
+        int int3 = Integer.parseInt(input3);
+        int int4 = Integer.parseInt(input4);
+        
+        secondImage = cropImage(int1, int2, int3, int4);
+        jLabel2.setIcon(new ImageIcon(new ImageIcon(secondImage).getImage().getScaledInstance((int) (image.getWidth() * scale), (int) (image.getHeight() * scale), Image.SCALE_SMOOTH)));
+        
+    }//GEN-LAST:event_cropActionPerformed
+     
     /**
      * @param args the command line arguments
      */
@@ -332,9 +371,13 @@ public class Main extends javax.swing.JFrame {
             }
         });
     }
+    
+    
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem anticlockwise;
     private javax.swing.JMenuItem clockwise;
+    private javax.swing.JMenuItem crop;
     private javax.swing.JMenuItem flipHorizontal;
     private javax.swing.JMenuItem flipVertical;
     private javax.swing.JMenuItem greyscale;
@@ -348,5 +391,6 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JMenu resize;
     // End of variables declaration//GEN-END:variables
 }
